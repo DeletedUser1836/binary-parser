@@ -23,6 +23,20 @@
  user@pc$~
 */
 
+char* clearText(char* bin_text[])
+{
+    size_t write_idx = 0;
+    for(size_t read_idx = 0; read_idx < strlen(bin_text); read_idx++)
+    {
+        if(!isspace(bin_text[read_idx]))
+        {
+            bin_text[write_idx] = bin_text[read_idx];
+            write_idx++;
+        }
+    }
+    return bin_text;
+}
+
 int main(int argc, char* argv[])
 {
     char mode = ' ';
@@ -94,9 +108,11 @@ int main(int argc, char* argv[])
     {
         case 'd':
         {
-            
-
             bin_text = argv[3];
+            clearText(bin_text);
+
+            //TODO
+
             break;
         }
         case 'f':
@@ -107,9 +123,10 @@ int main(int argc, char* argv[])
                 perror("File open error.\n");
                 return 1;
             }
+            bin_text = file;
+            clearText(bin_text);
 
-            fread(decoded_text, 1, sizeof(decoded_text), file);
-            fclose(file);
+            //TODO
 
             bin_text = decoded_text;
             break;
