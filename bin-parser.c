@@ -89,11 +89,13 @@ int main(int argc, char* argv[])
     }
     
     char* bin_text = NULL;
-    char decoded_text[1024] = "";
+    char decoded_text[4096] = "";
     switch (mode)
     {
         case 'd':
         {
+            
+
             bin_text = argv[3];
             break;
         }
