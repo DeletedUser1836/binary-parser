@@ -30,23 +30,33 @@ int main(int argc, char* argv[])
     bool fileMode = false;
     bool commonMode = false;
 
-    //parse args
-    for(int i = argc; i > 0; i--)
+    //Parse args
+    for(int i = 1; i < argc; i++)
     {
         if(argv[i] == "-f")
         {
             fileMode = true;
+            printf("FILE MODE TRUE");
         }
-        else if(argv[i] == "-h")
+        if(argv[i] == "-h")
         {
             helpMode = true;
+            printf("HELP MODE TRUE");
         }
         else
         {
             commonMode = true;
+            printf("COMMON MODE TRUE");
         }
         
     }
+    //Check args
+    if(fileMode && helpMode || fileMode && commonMode || commonMode && helpMode || fileMode && commonMode && helpMode)
+    {
+        printf("\nToo maany arguments.\n");
+        printf("Please run %c./bin-parse -h%c for help. \n", 34,  34);
+    }
+    /*
     if(argc > 1)
     {    
         char bin_msg[] = argv[1];
@@ -60,4 +70,5 @@ int main(int argc, char* argv[])
         printf("\nText to decode was not provided/Too few argumets.\n");
         printf("Please run %c./bin-parse -h%c for help. \n", 34,  34);
     }
+    */
 }
