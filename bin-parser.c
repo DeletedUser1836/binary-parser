@@ -2,7 +2,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <stdbool.h>
-
+#include <stdlib.h>
 /*
  How this shit has to work:
  
@@ -25,50 +25,98 @@
 
 int main(int argc, char* argv[])
 {
-    //Programm modes
-    bool helpMode = false;
-    bool fileMode = false;
-    bool commonMode = false;
+    char mode = ' ';
+    /*  MODES:
+
+        f - file mode
+        h - help mode
+        d - decode mode
+    */
 
     //Parse args
+    if(argc == 1)
+    {
+        printf("Neither the text or path to a file was not provided.\n");
+        printf("Use the \"--help\" flag to see the help text.\n");
+    }
     for(int i = 1; i < argc; i++)
     {
-        if(argv[i] == "-f")
+        if(strcmp(argv[i], "-d") == 0)
         {
-            fileMode = true;
-            printf("FILE MODE TRUE");
+            if(argc == 3)
+            {
+                mode = 'd';
+            }
+            else if (argc > 3)
+            {
+                printf("Too many arguments was provided.\n");
+            }
+            else if(argc < 3)
+            {
+                printf("Text to decode was not provided.\n");
+            }
         }
-        if(argv[i] == "-h")
+        if(strcmp(argv[i], "-f") == 0 || strcmp(argv[i], "--file") == 0)
         {
-            helpMode = true;
-            printf("HELP MODE TRUE");
+            if(argc == 3)
+            {
+                mode = 'f';
+            }
+            else if (argc > 3)
+            {
+                printf("Too many arguments was provided.\n");
+            }
+            else if(argc < 3)
+            {
+                printf("Path to file was not provided.\n");
+            }
+            
         }
-        else
+        if(strcmp(argv[i], "-h") == 0 || strcmp(argv[i], "--help") == 0)
         {
-            commonMode = true;
-            printf("COMMON MODE TRUE");
+            mode = 'h';
+            printf("\nbin-parse - command to change text from binary to normal ASCII characters");
+            printf("\n\nModes:");
+            printf("\n\nDecode Mode: ");
+            printf("\nJust put the binary text to decode in the quotes after the \"-d\" flag.");
+            printf("\n./bin-parse \"01110100 01100101 01111000 01110100\"");
+            printf("\n\nFile Mode: ");
+            printf("\nPut the path to the file with binary text after the \"-f\" or the \"--file\" flag.");
+            printf("\n./bin-parse -f /path/to/the/file");
+            printf("\n\nHelp mode: ");
+            printf("\nUse the \"-h\"or the \"--help\" flag to see this text.\n\n");
         }
-        
     }
-    //Check args
-    if(fileMode && helpMode || fileMode && commonMode || commonMode && helpMode || fileMode && commonMode && helpMode)
+    
+    char* bin_text = NULL;
+    char decoded_text[1024] = "";
+    switch (mode)
     {
-        printf("\nToo maany arguments.\n");
-        printf("Please run %c./bin-parse -h%c for help. \n", 34,  34);
+        case 'd':
+        {
+            bin_text = argv[3];
+            break;
+        }
+        case 'f':
+        {
+            FILE* file = fopen(argv[3], "r");
+            if (file == NULL)
+            {
+                perror("File open error.\n");
+                return 1;
+            }
+
+            fread(decoded_text, 1, sizeof(decoded_text), file);
+            fclose(file);
+
+            bin_text = decoded_text;
+            break;
+        }
+
+        default:
+        {
+            printf("Something went wrong. Please run the program again.\n");
+            break;
+        }
     }
-    /*
-    if(argc > 1)
-    {    
-        char bin_msg[] = argv[1];
-    }
-    else if(argc == 1)
-    {
-        char bin_msg[] = argv[0];
-    }
-    else if(argc == 0)
-    {
-        printf("\nText to decode was not provided/Too few argumets.\n");
-        printf("Please run %c./bin-parse -h%c for help. \n", 34,  34);
-    }
-    */
 }
